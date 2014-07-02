@@ -1,6 +1,8 @@
-# Based heavily on Gnats'd configuration system
+Bracket [![Build Status](https://secure.travis-ci.org/Mistobaan/bracket.svg?branch=develop)](http://travis-ci.org/Mistobaan/bracket)
 
 # Bracket Configuration
+
+This project is based heavily on Gnats'd configuration system
 
 ```
 # Sample config file
@@ -51,15 +53,6 @@ Same toml document in bracket would be
 ```
 # This is a BRKT document. Boom.
 
-title = "Braket Example"
-
-owner {
-  name: "Tom Preston-Werner"
-  organization: "GitHub"
-  bio: "GitHub Cofounder & CEO\nLikes tater tots and beer."
-  dob: 1979-05-27T07:32:00Z # First class dates? Why not?
-}
-
 database {
   server: "192.168.1.1"
   ports: [ 8001, 8001, 8002 ]
@@ -67,9 +60,20 @@ database {
   enabled: true
 }
 
-servers{
 
-  # You can indent as you please. Tabs or spaces. TOML don't care.
+title = "Braket Example"
+
+owner {
+  name: "Tom Preston-Werner"
+  organization: "GitHub"
+  bio: "GitHub Cofounder & CEO\nLikes tater tots and beer."
+  dob: 0001-01-01T00:00:00Z # First class dates? Why not?
+}
+
+
+servers {
+
+  # You can indent as you please. Tabs or spaces. Bracket don't care.
   alpha {
     ip: "10.0.0.1"
     dc: "eqdc10"
@@ -80,7 +84,7 @@ servers{
    dc: "eqdc10"
   }
 
-clients{ data : [ ["gamma", "delta"], [1, 2] ] }
+  clients { data : [ ["gamma", "delta"], [1, 2] ] }
 
   # Line breaks are OK when inside arrays
   hosts : [
@@ -88,7 +92,6 @@ clients{ data : [ ["gamma", "delta"], [1, 2] ] }
      "omega"
   ]
 }
-
 ```
 
 

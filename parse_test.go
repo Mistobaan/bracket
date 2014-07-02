@@ -136,7 +136,6 @@ func TestSample4(t *testing.T) {
 var complexCase = `
 # This is a BRKT document. Boom.
 
-
 database {
   server: "192.168.1.1"
   ports: [ 8001, 8001, 8002 ]
