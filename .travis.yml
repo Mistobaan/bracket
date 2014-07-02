@@ -1,0 +1,16 @@
+language: go
+go:
+  - 1.2
+
+install:
+  - DST=~/gopath/src/github.com/Mistobaan
+  - mkdir -p "$DST"
+  - git clone --depth=1 --quiet https://github.com/Mistobaan/bracket.git "$DST"/nats
+  - go get code.google.com/p/go.tools/cmd/vet
+
+script:
+  - go build
+  - go fmt ./...
+  - go vet ./...
+  - go test -i -race ./...
+  - go test -v -race ./...
