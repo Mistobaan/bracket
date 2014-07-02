@@ -3,7 +3,7 @@
 // Conf is a configuration file format used by gnatsd. It is
 // a flexible format that combines the best of traditional
 // configuration formats and newer styles such as JSON and YAML.
-package conf
+package bracket
 
 // The format supported is less restrictive than today's formats.
 // Supports mixed Arrays [], nested Maps {}, multiple comment types (# and //)

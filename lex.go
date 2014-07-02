@@ -13,7 +13,7 @@
 //
 // see lex_test.go for more examples.
 
-package conf
+package bracket
 
 import (
 	"fmt"
