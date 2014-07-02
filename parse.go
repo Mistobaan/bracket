@@ -40,7 +40,7 @@ type parser struct {
 }
 
 func ParseFile(filepath string) (map[string]interface{}, error) {
-	fd, err := ioutil.ReadFile(filepath)
+	data, err := ioutil.ReadFile(filepath)
 	if err != nil {
 		return nil, err
 	}
@@ -61,6 +61,31 @@ func Parse(data string) (map[string]interface{}, error) {
 		return nil, err
 	}
 	return p.mapping, nil
+}
+
+// Get will return false if an empty key given. Keys are case sensitive.
+func Get(mapping map[string]interface{}, key ...string) (string, bool) {
+	if len(key) == 0 {
+		return "", false
+	}
+
+	var hash map[string]interface{}
+	var ok bool
+	var hashOrVal interface{} = mapping
+	for _, k := range key {
+		if hash, ok = hashOrVal.(map[string]interface{}); !ok {
+			return "", false
+		}
+		if hashOrVal, ok = hash[k]; !ok {
+			return "", false
+		}
+	}
+
+	if value, ok := hashOrVal.(string); !ok {
+		return "", false
+	} else {
+		return value, true
+	}
 }
 
 func parse(data string) (p *parser, err error) {
