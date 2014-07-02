@@ -16,8 +16,8 @@ package bracket
 
 import (
 	"fmt"
+	"io"
 	"io/ioutil"
-	"os"
 	"strconv"
 	"time"
 )
@@ -40,17 +40,18 @@ type parser struct {
 }
 
 func ParseFile(filepath string) (map[string]interface{}, error) {
-	fd, err := os.Open(filepath)
+	fd, err := ioutil.ReadFile(filepath)
 	if err != nil {
 		return nil, err
 	}
-	defer fd.Close()
+	return Parse(string(data))
+}
 
-	data, err := ioutil.ReadAll(fd)
+func ParseReader(r io.Reader) (map[string]interface{}, error) {
+	data, err := ioutil.ReadAll(r)
 	if err != nil {
 		return nil, err
 	}
-
 	return Parse(string(data))
 }
 
