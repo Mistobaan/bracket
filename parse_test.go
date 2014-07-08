@@ -1,8 +1,9 @@
-package conf
+package bracket
 
 import (
 	"reflect"
 	"testing"
+	"time"
 )
 
 // Test to make sure we get what we expect.
@@ -17,7 +18,8 @@ func test(t *testing.T, data string, ex map[string]interface{}) {
 	}
 
 	if !reflect.DeepEqual(m, ex) {
-		t.Fatalf("Not Equal:\nReceived: '%+v'\nExpected: '%+v'\n", m, ex)
+		t.Logf("%+v\n", m)
+		t.Fatalf("Not Equal:\nReceived: '%#v'\nExpected: '%#v'\n", m, ex)
 	}
 }
 
@@ -129,4 +131,90 @@ func TestSample4(t *testing.T) {
 		},
 	}
 	test(t, sample4, ex)
+}
+
+var complexCase = `
+# This is a BRKT document. Boom.
+
+database {
+  server: "192.168.1.1"
+  ports: [ 8001, 8001, 8002 ]
+  connection_max: 5000
+  enabled: true
+}
+
+
+title = "Braket Example"
+
+owner {
+  name: "Tom Preston-Werner"
+  organization: "GitHub"
+  bio: "GitHub Cofounder & CEO\nLikes tater tots and beer."
+  dob: 0001-01-01T00:00:00Z # First class dates? Why not?
+}
+
+
+servers {
+
+  # You can indent as you please. Tabs or spaces. Bracket don't care.
+  alpha {
+    ip: "10.0.0.1"
+    dc: "eqdc10"
+  }
+
+  beta {
+   ip: "10.0.0.2"
+   dc: "eqdc10"
+  }
+
+  clients { data : [ ["gamma", "delta"], [1, 2] ] }
+
+  # Line breaks are OK when inside arrays
+  hosts : [
+     "alpha",
+     "omega"
+  ]
+}
+`
+
+func xxxTestComplexCase(t *testing.T) {
+
+	date, err := time.Parse(time.RFC3339, "0001-01-01T00:00:00Z")
+	if err != nil {
+		t.Fail()
+	}
+
+	ex := map[string]interface{}{
+		"title": "Braket Example",
+
+		"owner": map[string]interface{}{
+			"organization": "GitHub",
+			"bio":          "GitHub Cofounder & CEO\\nLikes tater tots and beer.",
+			"dob":          date,
+			"name":         "Tom Preston-Werner",
+		},
+
+		/*
+			"database": map[string]interface{}{"server": "192.168.1.1", "ports": []interface{}{8001, 8001, 8002}, "connection_max": 5000, "enabled": true},
+		*/
+		"servers": map[string]interface{}{
+
+			"alpha": map[string]interface{}{
+				"ip": "10.0.0.1",
+				"dc": "eqdc10",
+			},
+
+			"beta": map[string]interface{}{
+				"ip": "10.0.0.2",
+				"dc": "eqdc10",
+			},
+
+			"clients": map[string]interface{}{
+				"data": []interface{}{[]interface{}{
+					"gamma", "delta"}, []int{1, 2}}},
+			"hosts": []string{"alpha", "omega"},
+		},
+	}
+
+	test(t, complexCase, ex)
 }

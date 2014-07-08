@@ -2,19 +2,17 @@ language: go
 go:
   - 1.2
 
-branches:
-  only:
-    - master
-
 install:
-  - DST=~/gopath/src/github.com/apcera
+  - DST=~/gopath/src/github.com/Mistobaan
   - mkdir -p "$DST"
-  - git clone --depth=1 --quiet https://github.com/apcera/nats.git "$DST"/nats
+  - git clone --depth=1 --quiet https://github.com/Mistobaan/bracket.git "$DST"/nats
   - go get code.google.com/p/go.tools/cmd/vet
+  - go install github.com/kisielk/errcheck
 
 script:
   - go build
   - go fmt ./...
   - go vet ./...
+  - errcheck ./...
   - go test -i -race ./...
   - go test -v -race ./...

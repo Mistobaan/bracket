@@ -3,7 +3,7 @@
 // Conf is a configuration file format used by gnatsd. It is
 // a flexible format that combines the best of traditional
 // configuration formats and newer styles such as JSON and YAML.
-package conf
+package bracket
 
 // The format supported is less restrictive than today's formats.
 // Supports mixed Arrays [], nested Maps {}, multiple comment types (# and //)
@@ -16,6 +16,8 @@ package conf
 
 import (
 	"fmt"
+	"io"
+	"io/ioutil"
 	"strconv"
 	"time"
 )
@@ -37,12 +39,53 @@ type parser struct {
 	keys []string
 }
 
+func ParseFile(filepath string) (map[string]interface{}, error) {
+	data, err := ioutil.ReadFile(filepath)
+	if err != nil {
+		return nil, err
+	}
+	return Parse(string(data))
+}
+
+func ParseReader(r io.Reader) (map[string]interface{}, error) {
+	data, err := ioutil.ReadAll(r)
+	if err != nil {
+		return nil, err
+	}
+	return Parse(string(data))
+}
+
 func Parse(data string) (map[string]interface{}, error) {
 	p, err := parse(data)
 	if err != nil {
 		return nil, err
 	}
 	return p.mapping, nil
+}
+
+// Get will return false if an empty key given. Keys are case sensitive.
+func Get(mapping map[string]interface{}, key ...string) (string, bool) {
+	if len(key) == 0 {
+		return "", false
+	}
+
+	var hash map[string]interface{}
+	var ok bool
+	var hashOrVal interface{} = mapping
+	for _, k := range key {
+		if hash, ok = hashOrVal.(map[string]interface{}); !ok {
+			return "", false
+		}
+		if hashOrVal, ok = hash[k]; !ok {
+			return "", false
+		}
+	}
+
+	if value, ok := hashOrVal.(string); !ok {
+		return "", false
+	} else {
+		return value, true
+	}
 }
 
 func parse(data string) (p *parser, err error) {
